@@ -20,6 +20,20 @@
 ;; specific command (e.g. iex -S mix, iex -S mix phx.server, etc)
 
 ;;; Code:
+
+;; Mode definitions
+(defgroup inf-elixir nil
+  "Ability to interact with an Elixir REPL."
+  :prefix "inf-elixir-"
+  :group 'languages)
+
+(defcustom inf-elixir-prefer-umbrella t
+  "Whether or not to prefer running the REPL from the umbrella, if it exists.
+
+If there is no umbrella project, the value of this variable is irrelevant."
+  :type 'boolean
+  :group 'inf-elixir)
+
 (defvar inf-elixir-buffer nil
   "The buffer of the currently-running Elixir REPL subprocess.")
 
@@ -28,6 +42,22 @@
 
 (define-derived-mode inf-elixir-mode comint-mode "Inf-Elixir"
   "Major mode for interacting with the REPL.")
+
+
+;; Private functions
+
+(defun inf-elixir--up-directory (dir)
+  "Return the directory above DIR."
+  (file-name-directory (directory-file-name dir)))
+
+(defun inf-elixir--find-umbrella-root (start-dir)
+  "Traverse upwards from START-DIR until highest mix.exs file is discovered."
+  (when-let ((project-dir (locate-dominating-file start-dir "mix.exs")))
+    (or (inf-elixir--find-umbrella-root (inf-elixir--up-directory project-dir))
+	project-dir)))
+
+
+;; Public functions
 
 (defun inf-elixir (&optional cmd)
   "Run Elixir shell, using CMD if given."
