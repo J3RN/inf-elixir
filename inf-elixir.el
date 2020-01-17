@@ -106,4 +106,21 @@ If there is no umbrella project, the value of this variable is irrelevant."
   (let ((default-directory (inf-elixir--find-project-root)))
     (run-elixir "iex -S mix")))
 
+(defun inf-elixir-send-line ()
+  "Send the region to the REPL buffer and run it."
+  (interactive)
+  (comint-send-region inf-elixir-buffer (point-at-bol) (point-at-eol))
+  (comint-send-string inf-elixir-buffer "\n"))
+
+(defun inf-elixir-send-region ()
+  "Send the region to the REPL buffer and run it."
+  (interactive)
+  (comint-send-region inf-elixir-buffer (point) (mark))
+  (comint-send-string inf-elixir-buffer "\n"))
+
+(defun inf-elixir-send-buffer ()
+  "Send the buffer to the REPL buffer and run it."
+  (interactive)
+  (comint-send-region inf-elixir-buffer 1 (point-max))
+  (comint-send-string inf-elixir-buffer "\n"))
 ;;; inf-elixir.el ends here
