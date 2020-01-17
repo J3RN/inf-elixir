@@ -56,6 +56,12 @@ If there is no umbrella project, the value of this variable is irrelevant."
     (or (inf-elixir--find-umbrella-root (inf-elixir--up-directory project-dir))
 	project-dir)))
 
+(defun inf-elixir--find-project-root ()
+  "Find the root of the current Elixir project."
+  (if inf-elixir-prefer-umbrella
+      (inf-elixir--find-umbrella-root default-directory)
+    (locate-dominating-file default-directory "mix.exs")))
+
 
 ;; Public functions
 
@@ -97,7 +103,7 @@ If there is no umbrella project, the value of this variable is irrelevant."
 (defun inf-elixir-project ()
   "Run iex -S mix."
   (interactive)
-  (let ((default-directory (locate-dominating-file default-directory "mix.exs")))
+  (let ((default-directory (inf-elixir--find-project-root)))
     (run-elixir "iex -S mix")))
 
 ;;; inf-elixir.el ends here
