@@ -74,15 +74,7 @@ If there is no umbrella project, the value of this variable is irrelevant."
   "Run Elixir shell, using CMD if given."
   (interactive)
 
-  ;; Kill inf-elixir buffer if the process is dead
-  (if (not (comint-check-proc inf-elixir-buffer))
-      (kill-buffer inf-elixir-buffer))
-
-  ;; Clear inf-elixir-buffer var if buffer is dead
-  (if (not (buffer-live-p inf-elixir-buffer))
-      (setq inf-elixir-buffer nil))
-
-  (if inf-elixir-buffer
+  (if (and inf-elixir-buffer (comint-check-proc inf-elixir-buffer))
       (pop-to-buffer inf-elixir-buffer)
     (let* ((name "Elixir")
 	   (cmd (or cmd "iex"))
