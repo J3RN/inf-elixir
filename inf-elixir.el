@@ -20,7 +20,10 @@
 ;; specific command (e.g. iex -S mix, iex -S mix phx.server, etc)
 
 ;;; Code:
-
+
+(require 'comint)
+(require 'subr-x)
+
 ;; Mode definitions
 (defgroup inf-elixir nil
   "Ability to interact with an Elixir REPL."
@@ -43,7 +46,6 @@ If there is no umbrella project, the value of this variable is irrelevant."
 (define-derived-mode inf-elixir-mode comint-mode "Inf-Elixir"
   "Major mode for interacting with the REPL.")
 
-
 ;; Private functions
 
 (defun inf-elixir--up-directory (dir)
@@ -62,7 +64,6 @@ If there is no umbrella project, the value of this variable is irrelevant."
       (inf-elixir--find-umbrella-root default-directory)
     (locate-dominating-file default-directory "mix.exs")))
 
-
 ;; Public functions
 
 (defun inf-elixir (&optional cmd)
@@ -115,4 +116,7 @@ If there is no umbrella project, the value of this variable is irrelevant."
   (interactive)
   (comint-send-region inf-elixir-buffer 1 (point-max))
   (comint-send-string inf-elixir-buffer "\n"))
+
+(provide 'inf-elixir)
+
 ;;; inf-elixir.el ends here
