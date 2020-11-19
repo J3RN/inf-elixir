@@ -18,13 +18,10 @@ This is a package to allow you to pop open and interact with Elixir REPL (IEx, p
 
 ``` elisp
 (use-package inf-elixir
-  :load-path "packages/inf-elixir/"
-  :bind (
-    ("C-c C-l i i" . 'inf-elixir)
-    ("C-c C-l i p" . 'inf-elixir-project)
-    ("C-c C-l i l" . 'inf-elixir-send-line)
-    ("C-c C-l i r" . 'inf-elixir-send-region)
-    ("C-c C-l i b" . 'inf-elixir-send-buffer)
-  )
-)
+  :load-path "packages/inf-elixir"
+  :bind (("C-c i i" . 'inf-elixir)
+         ("C-c i p" . 'inf-elixir-project)
+         ("C-c i l" . 'inf-elixir-send-line)
+         ("C-c i r" . 'inf-elixir-send-region)
+         ("C-c i b" . 'inf-elixir-send-buffer)))
 ```
