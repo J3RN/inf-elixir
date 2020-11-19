@@ -40,6 +40,18 @@ If there is no umbrella project, the value of this variable is irrelevant."
   :type 'boolean
   :group 'inf-elixir)
 
+(defcustom inf-elixir-base-command "iex"
+  "The command that forms the base of all REPL commands.
+
+Should be able to be run without any arguments."
+  :type 'string
+  :group 'inf-elixir)
+
+(defcustom inf-elixir-project-command "iex -S mix"
+  "The command used to start a REPL in the context of the current project."
+  :type 'string
+  :group 'inf-elixir)
+
 (defvar inf-elixir-buffer nil
   "The buffer of the currently-running Elixir REPL subprocess.")
 
@@ -72,20 +84,20 @@ If there is no umbrella project, the value of this variable is irrelevant."
 (defun inf-elixir (&optional cmd)
   "Run Elixir shell, using CMD if given."
   (interactive)
-  (run-elixir cmd))
+  (run-elixir (or
+	       cmd
+	       (if current-prefix-arg
+		   (read-from-minibuffer
+		    "Command: "
+		    inf-elixir-base-command
+		    nil nil 'inf-elixir))
+	       inf-elixir-base-command)))
 
 (defun run-elixir (&optional cmd)
   "Run Elixir shell, using CMD if given."
-  (interactive)
-
   (if (and inf-elixir-buffer (comint-check-proc inf-elixir-buffer))
       (pop-to-buffer inf-elixir-buffer)
-    (let* ((name "Elixir")
-	   (cmd (or cmd "iex"))
-	   (cmd (if current-prefix-arg
-		    (read-from-minibuffer "Command: " cmd nil nil 'inf-elixir)
-		  cmd))
-	   (cmdlist (split-string cmd)))
+    (let* ((name "Elixir") (cmdlist (split-string cmd)))
       (set-buffer (apply 'make-comint-in-buffer
 			 name
 			 (generate-new-buffer-name (format "*%s*" name))
@@ -96,11 +108,18 @@ If there is no umbrella project, the value of this variable is irrelevant."
       (setq inf-elixir-buffer (current-buffer))
       (pop-to-buffer (current-buffer)))))
 
-(defun inf-elixir-project ()
-  "Run iex -S mix."
+(defun inf-elixir-project (&optional cmd)
+  "Run REPL in the context of the current project, using CMD if given."
   (interactive)
   (let ((default-directory (inf-elixir--find-project-root)))
-    (run-elixir "iex -S mix")))
+    (run-elixir (or
+		 cmd
+		 (if current-prefix-arg
+		     (read-from-minibuffer
+		      "Project command: "
+		      inf-elixir-project-command
+		      nil nil 'inf-elixir-project))
+		 inf-elixir-project-command))))
 
 (defun inf-elixir-send-line ()
   "Send the region to the REPL buffer and run it."
