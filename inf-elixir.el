@@ -5,7 +5,7 @@
 ;; Author: Jonathan Arnett <jonathan.arnett@protonmail.com>
 ;; URL: https://github.com/J3RN/inf-elixir
 ;; Keywords: languages, processes, tools
-;; Version: 1.0.0
+;; Version: 1.0.1
 ;; Package-Requires: ((emacs "25.1"))
 
 ;; This file is NOT part of GNU Emacs.
