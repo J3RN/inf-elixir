@@ -111,7 +111,7 @@ Should be able to be run without any arguments."
   (if (and inf-elixir-buffer (comint-check-proc inf-elixir-buffer))
       (pop-to-buffer inf-elixir-buffer)
     (let* ((name "Elixir") (cmdlist (split-string cmd)))
-      (set-buffer (apply 'make-comint-in-buffer
+      (set-buffer (apply #'make-comint-in-buffer
                          name
                          (generate-new-buffer-name (format "*%s*" name))
                          (car cmdlist)
