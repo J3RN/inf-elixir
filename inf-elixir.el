@@ -82,7 +82,7 @@ Should be able to be run without any arguments."
   "Traverse upwards from START-DIR until highest mix.exs file is discovered."
   (when-let ((project-dir (locate-dominating-file start-dir "mix.exs")))
     (or (inf-elixir--find-umbrella-root (inf-elixir--up-directory project-dir))
-	project-dir)))
+        project-dir)))
 
 (defun inf-elixir--find-project-root ()
   "Find the root of the current Elixir project."
@@ -97,13 +97,13 @@ Should be able to be run without any arguments."
   "Run Elixir shell, using CMD if given."
   (interactive)
   (run-elixir (or
-	       cmd
-	       (if current-prefix-arg
-		   (read-from-minibuffer
-		    "Command: "
-		    inf-elixir-base-command
-		    nil nil 'inf-elixir))
-	       inf-elixir-base-command)))
+               cmd
+               (if current-prefix-arg
+                   (read-from-minibuffer
+                    "Command: "
+                    inf-elixir-base-command
+                    nil nil 'inf-elixir))
+               inf-elixir-base-command)))
 
 ;;;###autoload
 (defun run-elixir (&optional cmd)
@@ -112,11 +112,11 @@ Should be able to be run without any arguments."
       (pop-to-buffer inf-elixir-buffer)
     (let* ((name "Elixir") (cmdlist (split-string cmd)))
       (set-buffer (apply 'make-comint-in-buffer
-			 name
-			 (generate-new-buffer-name (format "*%s*" name))
-			 (car cmdlist)
-			 nil
-			 (cdr cmdlist)))
+                         name
+                         (generate-new-buffer-name (format "*%s*" name))
+                         (car cmdlist)
+                         nil
+                         (cdr cmdlist)))
       (inf-elixir-mode)
       (setq inf-elixir-buffer (current-buffer))
       (pop-to-buffer (current-buffer)))))
@@ -126,13 +126,13 @@ Should be able to be run without any arguments."
   (interactive)
   (let ((default-directory (inf-elixir--find-project-root)))
     (run-elixir (or
-		 cmd
-		 (if current-prefix-arg
-		     (read-from-minibuffer
-		      "Project command: "
-		      inf-elixir-project-command
-		      nil nil 'inf-elixir-project))
-		 inf-elixir-project-command))))
+                 cmd
+                 (if current-prefix-arg
+                     (read-from-minibuffer
+                      "Project command: "
+                      inf-elixir-project-command
+                      nil nil 'inf-elixir-project))
+                 inf-elixir-project-command))))
 
 (defun inf-elixir-send-line ()
   "Send the region to the REPL buffer and run it."
