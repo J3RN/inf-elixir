@@ -1,6 +1,12 @@
-;;; inf-elixir.el --- Run an Elixir shell in a buffer
+;;; inf-elixir.el --- Run an interactive Elixir shell -*- lexical-binding: t -*-
 
-;; Copyright 2020 Jonathan Arnett
+;; Copyright © 2019–2021 Jonathan Arnett <jonathan.arnett@protonmail.com>
+
+;; Author: Jonathan Arnett <jonathan.arnett@protonmail.com>
+;; URL: https://github.com/J3RN/inf-elixir
+;; Keywords: languages, processes, tools
+;; Version: 1.0.0
+;; Package-Requires: ((emacs "25.1"))
 
 ;; This file is NOT part of GNU Emacs.
 
@@ -19,7 +25,7 @@
 
 ;;; Commentary:
 
-;; Provides access to an IEx shell in a buffer, optionally running a
+;; Provides access to an IEx shell buffer, optionally running a
 ;; specific command (e.g. iex -S mix, iex -S mix phx.server, etc)
 
 ;;; Code:
@@ -27,7 +33,8 @@
 (require 'comint)
 (require 'subr-x)
 
-;; Mode definitions
+
+;;; Customization
 (defgroup inf-elixir nil
   "Ability to interact with an Elixir REPL."
   :prefix "inf-elixir-"
@@ -52,17 +59,19 @@ Should be able to be run without any arguments."
   :type 'string
   :group 'inf-elixir)
 
+
+;;; Mode definitions and configuration
 (defvar inf-elixir-buffer nil
   "The buffer of the currently-running Elixir REPL subprocess.")
 
 (define-minor-mode inf-elixir-minor-mode
-  "Minor mode for interacting with the REPL.")
+  "Minor mode for Elixir buffers that allows interacting with the REPL.")
 
 (define-derived-mode inf-elixir-mode comint-mode "Inf-Elixir"
-  "Major mode for interacting with the REPL.")
+  "Major mode for interacting with an Elixir REPL.")
 
-;; Private functions
-
+
+;;; Private functions
 (defun inf-elixir--up-directory (dir)
   "Return the directory above DIR."
   (file-name-directory (directory-file-name dir)))
@@ -79,8 +88,8 @@ Should be able to be run without any arguments."
       (inf-elixir--find-umbrella-root default-directory)
     (locate-dominating-file default-directory "mix.exs")))
 
-;; Public functions
-
+
+;;; Public functions
 (defun inf-elixir (&optional cmd)
   "Run Elixir shell, using CMD if given."
   (interactive)
