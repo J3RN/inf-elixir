@@ -64,9 +64,11 @@ Should be able to be run without any arguments."
 (defvar inf-elixir-buffer nil
   "The buffer of the currently-running Elixir REPL subprocess.")
 
+;;;###autoload
 (define-minor-mode inf-elixir-minor-mode
   "Minor mode for Elixir buffers that allows interacting with the REPL.")
 
+;;;###autoload
 (define-derived-mode inf-elixir-mode comint-mode "Inf-Elixir"
   "Major mode for interacting with an Elixir REPL.")
 
@@ -90,6 +92,7 @@ Should be able to be run without any arguments."
 
 
 ;;; Public functions
+;;;###autoload
 (defun inf-elixir (&optional cmd)
   "Run Elixir shell, using CMD if given."
   (interactive)
@@ -102,6 +105,7 @@ Should be able to be run without any arguments."
 		    nil nil 'inf-elixir))
 	       inf-elixir-base-command)))
 
+;;;###autoload
 (defun run-elixir (&optional cmd)
   "Run Elixir shell, using CMD if given."
   (if (and inf-elixir-buffer (comint-check-proc inf-elixir-buffer))
