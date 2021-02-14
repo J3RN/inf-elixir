@@ -1,4 +1,6 @@
 # inf-elixir
+[![License GPL 3][badge-license]](http://www.gnu.org/licenses/gpl-3.0.txt)
+[![MELPA](https://melpa.org/packages/inf-elixir-badge.svg)](https://melpa.org/#/inf-elixir)
 
 This is a package to allow you to pop open and interact with Elixir REPL (IEx, presently).
 
@@ -36,3 +38,5 @@ An example of some keybindings is included below.
          ("C-c i r" . 'inf-elixir-send-region)
          ("C-c i b" . 'inf-elixir-send-buffer)))
 ```
+
+[badge-license]: https://img.shields.io/badge/license-GPL_3-green.svg
