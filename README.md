@@ -14,9 +14,9 @@ This is a package to allow you to pop open and interact with Elixir REPL (IEx, p
 
 ## Keybindings
 
-`inf-elixir` intentionally ships with no keybindings by default. This is grant the user the freedom to specify whatever keybindings they would like. Functions that users would probably have an interest in binding are:
+`inf-elixir` intentionally ships with no keybindings by default. This grants the user the freedom to specify whatever keybindings they would like. Functions that users would probably have an interest in binding are:
 - `inf-elixir` :: Starts an IEx shell in a new buffer, or switches to an existing IEx shell buffer.
-- `inf-elixir-project` :: Starts an IEx shell in the context of the project (by default by passing the `-S mix` argument to `iex`).
+- `inf-elixir-project` :: Starts an IEx shell in the context of the project (by default by passing the `-S mix` argument to `iex`), or switches to an existing IEx shell buffer.
 - `inf-elixir-send-line` :: Send the current line to the IEx shell buffer as input.
 - `inf-elixir-send-region` :: Send the selected region to the IEx shell buffer as input.
 - `inf-elixir-send-buffer` :: Send the entire current buffer to the IEx shell as input.
