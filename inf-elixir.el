@@ -90,7 +90,11 @@ Should be able to be run without any arguments."
       (inf-elixir--find-umbrella-root default-directory)
     (locate-dominating-file default-directory "mix.exs")))
 
-(defun inf-elixir--run-cmd (cmd)
+
+;;; Public functions
+
+;;;###autoload
+(defun inf-elixir-run-cmd (cmd)
   "Open an IEx buffer (creating one if needed) and run CMD."
   (if (and inf-elixir-buffer (comint-check-proc inf-elixir-buffer))
       (pop-to-buffer inf-elixir-buffer)
@@ -106,13 +110,11 @@ Should be able to be run without any arguments."
       (setq inf-elixir-buffer (current-buffer))
       (pop-to-buffer (current-buffer)))))
 
-
-;;; Public functions
 ;;;###autoload
 (defun inf-elixir (&optional cmd)
   "Run Elixir shell, using CMD if given."
   (interactive)
-  (inf-elixir--run-cmd
+  (inf-elixir-run-cmd
    (cond
     (cmd cmd)
     (current-prefix-arg
@@ -123,7 +125,7 @@ Should be able to be run without any arguments."
   "Run REPL in the context of the current project, using CMD if given."
   (interactive)
   (let ((default-directory (inf-elixir--find-project-root)))
-    (inf-elixir--run-cmd
+    (inf-elixir-run-cmd
      (cond
       (cmd cmd)
       (current-prefix-arg
