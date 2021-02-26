@@ -74,6 +74,7 @@ Should be able to be run without any arguments."
 
 
 ;;; Private functions
+
 (defun inf-elixir--up-directory (dir)
   "Return the directory above DIR."
   (file-name-directory (directory-file-name dir)))
@@ -89,6 +90,13 @@ Should be able to be run without any arguments."
   (if inf-elixir-prefer-umbrella
       (inf-elixir--find-umbrella-root default-directory)
     (locate-dominating-file default-directory "mix.exs")))
+
+(defun inf-elixir--send (command)
+  "Send COMMAND to the REPL process."
+  (with-current-buffer inf-elixir-buffer
+    (comint-add-to-input-history command))
+  (comint-send-string inf-elixir-buffer command)
+  (comint-send-string inf-elixir-buffer "\n"))
 
 
 ;;; Public functions
@@ -135,20 +143,17 @@ Should be able to be run without any arguments."
 (defun inf-elixir-send-line ()
   "Send the region to the REPL buffer and run it."
   (interactive)
-  (comint-send-region inf-elixir-buffer (point-at-bol) (point-at-eol))
-  (comint-send-string inf-elixir-buffer "\n"))
+  (inf-elixir--send (buffer-substring (point-at-bol) (point-at-eol))))
 
 (defun inf-elixir-send-region ()
   "Send the region to the REPL buffer and run it."
   (interactive)
-  (comint-send-region inf-elixir-buffer (point) (mark))
-  (comint-send-string inf-elixir-buffer "\n"))
+  (inf-elixir--send (buffer-substring (point) (mark))))
 
 (defun inf-elixir-send-buffer ()
   "Send the buffer to the REPL buffer and run it."
   (interactive)
-  (comint-send-region inf-elixir-buffer 1 (point-max))
-  (comint-send-string inf-elixir-buffer "\n"))
+  (inf-elixir--send (buffer-string)))
 
 (provide 'inf-elixir)
 
