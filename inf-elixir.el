@@ -61,8 +61,8 @@ Should be able to be run without any arguments."
 
 
 ;;; Mode definitions and configuration
-(defvar inf-elixir-buffer nil
-  "The buffer of the currently-running Elixir REPL subprocess.")
+(defvar inf-elixir-project-buffers (make-hash-table :test 'equal)
+  "A mapping of projects to buffers with running Elixir REPL subprocesses.")
 
 ;;;###autoload
 (define-minor-mode inf-elixir-minor-mode
@@ -91,54 +91,125 @@ Should be able to be run without any arguments."
       (inf-elixir--find-umbrella-root default-directory)
     (locate-dominating-file default-directory "mix.exs")))
 
+(defun inf-elixir--get-project-buffer (dir)
+  "Find the REPL buffer for project DIR."
+  (gethash dir inf-elixir-project-buffers))
+
+(defun inf-elixir--set-project-buffer (dir buf)
+  "Set BUF to be the REPL buffer for project DIR."
+  (puthash dir buf inf-elixir-project-buffers))
+
+(defun inf-elixir--get-project-process (dir)
+  "Find the process for project DIR."
+  (get-buffer-process (inf-elixir--get-project-buffer dir)))
+
+(defun inf-elixir--project-name (dir)
+  "Determine a human-readable name for DIR."
+  (if dir
+      (file-name-nondirectory (directory-file-name dir))
+    ""))
+
+(defun inf-elixir--buffer-name (dir)
+  "Generate a REPL buffer name for DIR."
+  (if dir
+      (concat "Inf-Elixir - " (inf-elixir--project-name dir))
+    "Inf-Elixir"))
+
+(defun inf-elixir--maybe-kill-repl (dir)
+  "If a REPL is already running in DIR, ask user if they want to kill it."
+  (let ((proc (inf-elixir--get-project-process dir))
+        (name (inf-elixir--project-name dir)))
+    (when (and
+           proc
+           (yes-or-no-p
+                (concat "An Elixir REPL is already running in " name ". Kill it? ")))
+      (delete-process proc))))
+
+(defun inf-elixir--maybe-clear-repl (dir)
+  "Clear the REPL buffer for project DIR if the process is dead."
+  (when-let ((buf (inf-elixir--get-project-buffer dir)))
+    (if (and
+         (buffer-live-p buf)
+         (not (process-live-p (get-buffer-process buf))))
+        (with-current-buffer buf (erase-buffer)))))
+
+(defun inf-elixir--maybe-start-repl (dir cmd)
+  "If no REPL is running in DIR, start one with CMD.
+
+Always returns a REPL buffer for DIR."
+  (let ((buf-name (inf-elixir--buffer-name dir)))
+    (if (process-live-p (inf-elixir--get-project-process dir))
+        (inf-elixir--get-project-buffer dir)
+      (with-current-buffer
+          (apply #'make-comint-in-buffer buf-name nil (car cmd) nil (cdr cmd))
+        (inf-elixir-mode)
+        (when dir (inf-elixir--set-project-buffer dir (current-buffer)))
+        (current-buffer)))))
+
 (defun inf-elixir--send (command)
-  "Send COMMAND to the REPL process."
-  (with-current-buffer inf-elixir-buffer
-    (comint-add-to-input-history command))
-  (comint-send-string inf-elixir-buffer command)
-  (comint-send-string inf-elixir-buffer "\n"))
+  "Send COMMAND to the REPL process in BUF."
+  (let* ((proj-dir (inf-elixir--find-project-root))
+         (proj-buf (inf-elixir--get-project-buffer proj-dir)))
+    (if (process-live-p (get-buffer-process proj-buf))
+        (with-current-buffer proj-buf
+          (comint-add-to-input-history command)
+          (comint-send-string proj-buf (concat command "\n")))
+      (message (concat "No REPL running in " (inf-elixir--project-name proj-dir))))))
 
 
 ;;; Public functions
 
 ;;;###autoload
-(defun inf-elixir-run-cmd (cmd)
-  "Open an IEx buffer (creating one if needed) and run CMD."
-  (if (and inf-elixir-buffer (comint-check-proc inf-elixir-buffer))
-      (pop-to-buffer inf-elixir-buffer)
-    (let* ((name "Elixir")
-           (cmdlist (split-string cmd)))
-      (set-buffer (apply #'make-comint-in-buffer
-                         name
-                         (generate-new-buffer-name (format "*%s*" name))
-                         (car cmdlist)
-                         nil
-                         (cdr cmdlist)))
-      (inf-elixir-mode)
-      (setq inf-elixir-buffer (current-buffer))
-      (pop-to-buffer (current-buffer)))))
+(defun inf-elixir-run-cmd (dir cmd)
+  "Create a new IEx buffer and run CMD in project DIR.
+
+DIR should be an absolute path to the root level of a Mix project (where the
+mix.exs file is).
+
+A value of nil for DIR indicates that the REPL should not belong to any
+project and should be created as a global REPL."
+  (inf-elixir--maybe-kill-repl dir)
+  (inf-elixir--maybe-clear-repl dir)
+  (pop-to-buffer (inf-elixir--maybe-start-repl dir (split-string cmd))))
 
 ;;;###autoload
 (defun inf-elixir (&optional cmd)
-  "Run Elixir shell, using CMD if given."
+  "Create an Elixir REPL, using CMD if given.
+
+When called from ELisp, an argument (CMD) can be passed which will be the
+command run to start the REPL.  The default is provided by
+`inf-elixir-base-command'.
+
+When called interactively with a prefix argument, the user will
+be prompted for the REPL command.  The default is provided by
+`inf-elixir-base-command'."
   (interactive)
-  (inf-elixir-run-cmd
-   (cond
-    (cmd cmd)
-    (current-prefix-arg
-     (read-from-minibuffer "Command: " inf-elixir-base-command nil nil 'inf-elixir))
-    (t inf-elixir-base-command))))
+  (let ((cmd (cond
+              (cmd cmd)
+              (current-prefix-arg (read-from-minibuffer "Command: " inf-elixir-base-command nil nil 'inf-elixir))
+              (t inf-elixir-base-command))))
+    (inf-elixir-run-cmd nil cmd)))
 
 (defun inf-elixir-project (&optional cmd)
-  "Run REPL in the context of the current project, using CMD if given."
+  "Create a REPL in the context of the current project, using CMD if given.
+
+If an existing REPL already exists for the current project, the user will be
+asked whether they want to keep the running REPL or replace it.
+
+When called from ELisp, an argument (CMD) can be passed which will be the
+command run to start the REPL.  The default is provided by
+`inf-elixir-project-command'.
+
+When called interactively with a prefix argument, the user will
+be prompted for the REPL command.  The default is provided by
+`inf-elixir-project-command'."
   (interactive)
-  (let ((default-directory (inf-elixir--find-project-root)))
-    (inf-elixir-run-cmd
-     (cond
-      (cmd cmd)
-      (current-prefix-arg
-       (read-from-minibuffer "Project command: " inf-elixir-project-command nil nil 'inf-elixir-project))
-      (t inf-elixir-project-command)))))
+  (let ((default-directory (inf-elixir--find-project-root))
+        (cmd (cond
+              (cmd cmd)
+              (current-prefix-arg (read-from-minibuffer "Project command: " inf-elixir-project-command nil nil 'inf-elixir-project))
+              (t inf-elixir-project-command))))
+    (inf-elixir-run-cmd default-directory cmd)))
 
 (defun inf-elixir-send-line ()
   "Send the region to the REPL buffer and run it."
