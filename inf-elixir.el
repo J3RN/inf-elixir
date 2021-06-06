@@ -164,10 +164,8 @@ Always returns a REPL buffer for DIR."
   "Create a new IEx buffer and run CMD in project DIR.
 
 DIR should be an absolute path to the root level of a Mix project (where the
-mix.exs file is).
-
-A value of nil for DIR indicates that the REPL should not belong to any
-project and should be created as a global REPL."
+mix.exs file is).  A value of nil for DIR indicates that the REPL should not
+belong to any project."
   (inf-elixir--maybe-kill-repl dir)
   (inf-elixir--maybe-clear-repl dir)
   (pop-to-buffer (inf-elixir--maybe-start-repl dir (split-string cmd))))
