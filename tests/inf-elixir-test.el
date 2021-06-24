@@ -2,6 +2,8 @@
 
 ;;; Commentary:
 ;; Inf-Elixir uses ERT for testing.
+;; Run tests with:
+;; $ emacs -batch -l ert -l inf-elixir.el -l tests/inf-elixir-test.el -f ert-run-tests-batch-and-exit
 
 ;;; Code:
 
