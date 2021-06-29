@@ -1,0 +1,14 @@
+version: 2.1
+
+jobs:
+  test:
+    working_directory: /app
+    docker:
+      - image: ghcr.io/j3rn/emacs-elixir:v1
+    steps:
+      - checkout
+      - run: emacs -batch -l ert -l inf-elixir.el -l tests/inf-elixir-test.el -f ert-run-tests-batch-and-exit
+
+workflows:
+  test:
+    jobs: [test]
