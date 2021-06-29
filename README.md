@@ -1,6 +1,7 @@
 # inf-elixir
 [![License GPL 3][badge-license]](http://www.gnu.org/licenses/gpl-3.0.txt)
 [![MELPA](https://melpa.org/packages/inf-elixir-badge.svg)](https://melpa.org/#/inf-elixir)
+[![CircleCI status](https://circleci.com/gh/J3RN/inf-elixir.svg?style=svg)](https://app.circleci.com/pipelines/github/J3RN/inf-elixir)
 
 This is a package to allow you to pop open and interact with Elixir REPL (IEx, presently).
 
