@@ -1,6 +1,7 @@
 # inf-elixir
 [![License GPL 3][badge-license]](http://www.gnu.org/licenses/gpl-3.0.txt)
 [![MELPA](https://melpa.org/packages/inf-elixir-badge.svg)](https://melpa.org/#/inf-elixir)
+[![MELPA Stable](https://stable.melpa.org/packages/inf-elixir-badge.svg)](https://stable.melpa.org/#/inf-elixir)
 [![CircleCI status](https://circleci.com/gh/J3RN/inf-elixir.svg?style=svg)](https://app.circleci.com/pipelines/github/J3RN/inf-elixir)
 
 This is a package to allow you to pop open and interact with Elixir REPL (IEx, presently).
@@ -15,7 +16,7 @@ This is a package to allow you to pop open and interact with Elixir REPL (IEx, p
 
 ## Installation
 
-`inf-elixir` is proudly distributed by [MELPA](https://melpa.org/). In order to use packages from MELPA, follow [the Getting Started instructions on the MELPA website](https://melpa.org/#/getting-started).
+`inf-elixir` is proudly distributed by [MELPA](https://melpa.org/) and [MELPA Stable](https://stable.melpa.org). I would also strongly encourage folks to use MELPA Stable, as the releases there will be more, well, stable. In order to install the package, follow [the Getting Started instructions on the MELPA website](https://melpa.org/#/getting-started) or [the Getting Started instructions on the MELPA Stable website](https://stable.melpa.org/#/getting-started).
 
 Once your installation is configured to use MELPA, `inf-elixir` can be installed with `M-x package-install RET inf-elixir RET`.
 
