@@ -1,6 +1,7 @@
 # inf-elixir
 [![License GPL 3][badge-license]](http://www.gnu.org/licenses/gpl-3.0.txt)
 [![MELPA](https://melpa.org/packages/inf-elixir-badge.svg)](https://melpa.org/#/inf-elixir)
+[![CircleCI status](https://circleci.com/gh/J3RN/inf-elixir.svg?style=svg)](https://app.circleci.com/pipelines/github/J3RN/inf-elixir)
 
 This is a package to allow you to pop open and interact with Elixir REPL (IEx, presently).
 
@@ -41,3 +42,18 @@ Once your installation is configured to use MELPA, `inf-elixir` can be installed
 An example of keybindings is included in the `use-package` declaration above.
 
 [badge-license]: https://img.shields.io/badge/license-GPL_3-green.svg
+
+## Development
+
+I am not yet using any kind of build tool (like [Eldev](https://github.com/doublep/eldev) or [Cask](https://github.com/cask/cask)) to develop this plugin. Generally speaking, working with the code involves:
+1. Clone the git repository
+2. Make some changes
+3. Load your changes with `M-x load-file RET inf-elixir.el RET`
+4. Verify your changes worked
+5. Send a PR :pray:
+
+There are some tests written with [ERT](https://www.gnu.org/software/emacs/manual/html_node/ert/index.html) that can be run with this command:
+
+```
+$ emacs -batch -l ert -l inf-elixir.el -l tests/inf-elixir-test.el -f ert-run-tests-batch-and-exit
+```
