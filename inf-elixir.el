@@ -188,6 +188,7 @@ be prompted for the REPL command.  The default is provided by
               (t inf-elixir-base-command))))
     (inf-elixir-run-cmd nil cmd)))
 
+;;;###autoload
 (defun inf-elixir-project (&optional cmd)
   "Create a REPL in the context of the current project, using CMD if given.
 
