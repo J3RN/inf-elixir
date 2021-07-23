@@ -141,7 +141,8 @@ Always returns a REPL buffer for DIR."
     (if (process-live-p (inf-elixir--get-project-process dir))
         (inf-elixir--get-project-buffer dir)
       (with-current-buffer
-          (apply #'make-comint-in-buffer buf-name nil (car cmd) nil (cdr cmd))
+          (let ((default-directory (or dir default-directory)))
+            (apply #'make-comint-in-buffer buf-name nil (car cmd) nil (cdr cmd)))
         (inf-elixir-mode)
         (when dir (inf-elixir--set-project-buffer dir (current-buffer)))
         (current-buffer)))))
