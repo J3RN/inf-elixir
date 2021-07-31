@@ -59,6 +59,16 @@ Should be able to be run without any arguments."
   :type 'string
   :group 'inf-elixir)
 
+(defcustom inf-elixir-open-command "emacsclient --no-wait +__LINE__ __FILE__"
+  "Value to be populated into the `ELIXIR_EDITOR' environment variable.
+
+The `ELIXIR_EDITOR' is used by the IEx `open/1' helper to open files from the
+REPL.  Run `h(open)' in an IEx shell for more information about `ELIXIR_EDITOR'.
+
+NOTE: Changing this variable will not affect running REPLs."
+  :type 'string
+  :group 'inf-elixir)
+
 
 ;;; Mode definitions and configuration
 (defvar inf-elixir-project-buffers (make-hash-table :test 'equal)
@@ -140,6 +150,7 @@ Always returns a REPL buffer for DIR."
   (let ((buf-name (inf-elixir--buffer-name dir)))
     (if (process-live-p (inf-elixir--get-project-process dir))
         (inf-elixir--get-project-buffer dir)
+      (setenv "ELIXIR_EDITOR" inf-elixir-open-command)
       (with-current-buffer
           (apply #'make-comint-in-buffer buf-name nil (car cmd) nil (cdr cmd))
         (inf-elixir-mode)
