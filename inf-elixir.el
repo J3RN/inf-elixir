@@ -5,7 +5,7 @@
 ;; Author: Jonathan Arnett <jonathan.arnett@protonmail.com>
 ;; URL: https://github.com/J3RN/inf-elixir
 ;; Keywords: languages, processes, tools
-;; Version: 2.1.1
+;; Version: 2.1.2
 ;; Package-Requires: ((emacs "25.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -220,7 +220,7 @@ be prompted for the REPL command.  The default is provided by
                   (current-prefix-arg (read-from-minibuffer "Project command: " inf-elixir-project-command nil nil 'inf-elixir-project))
                   (t inf-elixir-project-command))))
         (inf-elixir-run-cmd default-directory cmd))
-    (message "Could not find project root!")))
+    (message "Could not find project root! Try `inf-elixir' instead.")))
 
 (defun inf-elixir-send-line ()
   "Send the region to the REPL buffer and run it."
