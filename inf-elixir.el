@@ -5,7 +5,7 @@
 ;; Author: Jonathan Arnett <jonathan.arnett@protonmail.com>
 ;; URL: https://github.com/J3RN/inf-elixir
 ;; Keywords: languages, processes, tools
-;; Version: 2.0.0
+;; Version: 2.1.1
 ;; Package-Requires: ((emacs "25.1"))
 
 ;; This file is NOT part of GNU Emacs.
@@ -214,12 +214,13 @@ When called interactively with a prefix argument, the user will
 be prompted for the REPL command.  The default is provided by
 `inf-elixir-project-command'."
   (interactive)
-  (let ((default-directory (inf-elixir--find-project-root))
-        (cmd (cond
-              (cmd cmd)
-              (current-prefix-arg (read-from-minibuffer "Project command: " inf-elixir-project-command nil nil 'inf-elixir-project))
-              (t inf-elixir-project-command))))
-    (inf-elixir-run-cmd default-directory cmd)))
+  (if-let ((default-directory (inf-elixir--find-project-root)))
+      (let ((cmd (cond
+                  (cmd cmd)
+                  (current-prefix-arg (read-from-minibuffer "Project command: " inf-elixir-project-command nil nil 'inf-elixir-project))
+                  (t inf-elixir-project-command))))
+        (inf-elixir-run-cmd default-directory cmd))
+    (message "Could not find project root!")))
 
 (defun inf-elixir-send-line ()
   "Send the region to the REPL buffer and run it."
