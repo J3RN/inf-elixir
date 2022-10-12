@@ -28,7 +28,8 @@ Once your installation is configured to use MELPA, `inf-elixir` can be installed
          ("C-c i p" . 'inf-elixir-project)
          ("C-c i l" . 'inf-elixir-send-line)
          ("C-c i r" . 'inf-elixir-send-region)
-         ("C-c i b" . 'inf-elixir-send-buffer)))
+         ("C-c i b" . 'inf-elixir-send-buffer)
+         ("C-c i R" . 'inf-elixir-reload-module)))
 ```
 
 ## Keybindings
@@ -39,6 +40,7 @@ Once your installation is configured to use MELPA, `inf-elixir` can be installed
 - `inf-elixir-send-line` :: Send the current line to the IEx shell buffer as input.
 - `inf-elixir-send-region` :: Send the selected region to the IEx shell buffer as input.
 - `inf-elixir-send-buffer` :: Send the entire current buffer to the IEx shell as input.
+- `inf-elixir-reload-module` :: Reload modules from current buffer using `IEx.Helpers.r/1`.
 
 An example of keybindings is included in the `use-package` declaration above.
 
