@@ -230,6 +230,19 @@ the buffer so that the choice is remembered for that buffer."
                                            (inf-elixir)
                                          selected-buf))))
 
+(defun inf-elixir--matches-in-buffer (regexp &optional buffer)
+  "return a list of matches of REGEXP in BUFFER or the current buffer if not given."
+  (let ((matches))
+    (save-match-data
+      (save-excursion
+        (with-current-buffer (or buffer (current-buffer))
+          (save-restriction
+            (widen)
+            (goto-char 1)
+            (while (search-forward-regexp regexp nil t 1)
+              (push (match-string 1) matches)))))
+      matches)))
+
 
 ;;; Public functions
 
@@ -304,6 +317,13 @@ be prompted for the REPL command.  The default is provided by
   "Send the buffer to the REPL buffer and run it."
   (interactive)
   (inf-elixir--send (buffer-string)))
+
+(defun inf-elixir-reload-module ()
+  "Send command to reload module using `IEx.Helpers.r/1` and run it.
+   It will recompile all modules in the current file"
+  (interactive)
+  (inf-elixir--send
+   (format "r(%s)" (nth 0 (inf-elixir--matches-in-buffer "defmodule \\([A-Z][A-Za-z0-9\._]+\\)\s+")))))
 
 (provide 'inf-elixir)
 
