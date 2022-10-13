@@ -88,5 +88,25 @@ end")
     (sleep-for 0 500)
     (should (string-match-p "iex(1)> 2" (buffer-string))))))
 
+(ert-deftest inf-elixir-send-reload-module ()
+  "`inf-elixir-reload-module' sends r/1 to the REPL for the current module"
+  (inf-elixir-with-project
+   (inf-elixir-with-cleanup
+    (with-temp-buffer
+      (insert "defmodule Foobar do
+                def foo do
+                  :bar
+                end
+              end")
+      (make-directory "lib")
+      (write-file "lib/foobar.ex"))
+    (inf-elixir-project)
+    (while (not (string-match-p "iex(1)>" (buffer-string))) (sleep-for 0 10))
+    (find-file "lib/foobar.ex")
+    (inf-elixir-reload-module)
+    (sleep-for 0 500)
+    (with-current-buffer (get-buffer "*Inf-Elixir - inf-elixir-test*")
+      (should (string-match-p "{:reloaded, \\[Foobar\\]}" (buffer-string)))))))
+
 (provide 'inf-elixir-test)
 ;;; inf-elixir-test.el ends here
