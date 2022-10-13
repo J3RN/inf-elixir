@@ -320,7 +320,7 @@ be prompted for the REPL command.  The default is provided by
 
 (defun inf-elixir-reload-module ()
   "Send command to reload module using `IEx.Helpers.r/1` and run it.
-   It will recompile all modules in the current file"
+   It will recompile all modules defined in the current file"
   (interactive)
   (inf-elixir--send
    (format "r(%s)" (nth 0 (inf-elixir--matches-in-buffer "defmodule \\([A-Z][A-Za-z0-9\._]+\\)\s+")))))
