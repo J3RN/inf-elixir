@@ -306,7 +306,7 @@ be prompted for the REPL command.  The default is provided by
 (defun inf-elixir-send-line ()
   "Send the region to the REPL buffer and run it."
   (interactive)
-  (inf-elixir--send (buffer-substring (point-at-bol) (point-at-eol))))
+  (inf-elixir--send (buffer-substring (line-beginning-position) (line-end-position))))
 
 (defun inf-elixir-send-region ()
   "Send the region to the REPL buffer and run it."
