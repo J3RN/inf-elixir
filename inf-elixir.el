@@ -81,6 +81,12 @@ printed instead."
   :type 'buffer
   :group 'inf-elixir)
 
+(defcustom inf-elixir-switch-to-repl-on-send t
+  "If `t' switch to the corresponding repl window on any send command."
+
+  :type 'boolean
+  :group 'inf-elixir)
+
 
 ;;; Mode definitions and configuration
 (defvar inf-elixir-project-buffers (make-hash-table :test 'equal)
@@ -180,7 +186,8 @@ Always returns a REPL buffer for DIR."
     (with-current-buffer buf
       (comint-add-to-input-history cmd)
       (comint-send-string buf (concat cmd "\n")))
-    (pop-to-buffer buf)))
+    (if inf-elixir-switch-to-repl-on-send
+        (pop-to-buffer buf))))
 
 (defun inf-elixir--determine-repl-buf ()
   "Determines where to send a cmd when `inf-elixir-send-*' are used."
