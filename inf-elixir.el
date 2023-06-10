@@ -186,7 +186,7 @@ Always returns a REPL buffer for DIR."
     (with-current-buffer buf
       (comint-add-to-input-history cmd)
       (comint-send-string buf (concat cmd "\n")))
-    (if inf-elixir-on-send-switch-to-repl
+    (if inf-elixir-switch-to-repl-on-send
         (pop-to-buffer buf))))
 
 (defun inf-elixir--determine-repl-buf ()
