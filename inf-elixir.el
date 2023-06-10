@@ -81,10 +81,10 @@ printed instead."
   :type 'buffer
   :group 'inf-elixir)
 
-(defcustom inf-elixir-on-send-switch-to-repl t
+(defcustom inf-elixir-switch-to-repl-on-send t
   "If `t' switch to the corresponding repl window on any send command."
 
-  :type 'buffer
+  :type 'boolean
   :group 'inf-elixir)
 
 
