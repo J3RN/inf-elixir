@@ -70,17 +70,6 @@ NOTE: Changing this variable will not affect running REPLs."
   :type 'string
   :group 'inf-elixir)
 
-(defcustom inf-elixir-repl-buffer nil
-  "Override for what REPL buffer code snippets should be sent to.
-
-If this variable is set and the corresponding REPL buffer exists
-and has a living process, all `inf-elixir-send-*' commands will
-send to it.  If this variable is unset (the default) or the
-indicated buffer is dead or has a dead process, a warning will be
-printed instead."
-  :type 'buffer
-  :group 'inf-elixir)
-
 (defcustom inf-elixir-switch-to-repl-on-send t
   "If `t' switch to the corresponding repl window on any send command."
 
@@ -89,6 +78,15 @@ printed instead."
 
 
 ;;; Mode definitions and configuration
+(defvar inf-elixir-repl-buffer nil
+  "Override for what REPL buffer code snippets should be sent to.
+
+If this variable is set and the corresponding REPL buffer exists
+and has a living process, all `inf-elixir-send-*' commands will
+send to it.  If this variable is unset (the default) or the
+indicated buffer is dead or has a dead process, a warning will be
+printed instead.")
+
 (defvar inf-elixir-project-buffers (make-hash-table :test 'equal)
   "A mapping of projects to buffers with running Elixir REPL subprocesses.")
 
