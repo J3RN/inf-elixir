@@ -71,7 +71,7 @@ NOTE: Changing this variable will not affect running REPLs."
   :group 'inf-elixir)
 
 (defcustom inf-elixir-switch-to-repl-on-send t
-  "If `t' switch to the corresponding repl window on any send command."
+  "If t, switch to the corresponding repl window on any send command."
 
   :type 'boolean
   :group 'inf-elixir)
