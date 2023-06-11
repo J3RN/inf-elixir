@@ -161,7 +161,7 @@ printed instead.")
     (if (and
          (buffer-live-p buf)
          (not (process-live-p (get-buffer-process buf))))
-        (with-current-buffer buf (erase-buffer)))))
+        (with-current-buffer buf (let ((inhibit-read-only t)) (erase-buffer))))))
 
 (defun inf-elixir--maybe-start-repl (dir cmd)
   "If no REPL is running in DIR, start one with CMD.
