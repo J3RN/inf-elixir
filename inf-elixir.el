@@ -99,7 +99,8 @@ printed instead.")
 
 ;;;###autoload
 (define-derived-mode inf-elixir-mode comint-mode "Inf-Elixir"
-  "Major mode for interacting with an Elixir REPL.")
+  "Major mode for interacting with an Elixir REPL."
+  (setq-local comint-prompt-read-only t))
 
 
 ;;; Private functions
