@@ -97,13 +97,43 @@ printed instead.")
 (define-minor-mode inf-elixir-minor-mode
   "Minor mode for Elixir buffers that allows interacting with the REPL.")
 
+(defvar inf-elixir-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map "\t" 'completion-at-point)
+    map)
+  "Keymap used in inf-elixir REPL buffers.")
+
 ;;;###autoload
 (define-derived-mode inf-elixir-mode comint-mode "Inf-Elixir"
   "Major mode for interacting with an Elixir REPL."
-  (setq-local comint-prompt-read-only t))
-
+  (setq-local comint-prompt-regexp "^iex")
+  (setq-local comint-prompt-read-only t)
+  (setq-local completion-at-point-functions '(inf-elixir-completion-at-point)))
 
 ;;; Private functions
+
+(defun inf-elixir-completion-at-point ()
+  "Return completions for the current prompt."
+  (when-let ((repl-buffer (current-buffer))
+             (bounds (save-excursion (backward-char) (bounds-of-thing-at-point 'sentence)))
+             (to-expand (buffer-substring (car bounds) (cdr bounds))))
+    (comint-redirect-send-command-to-process (concat "IEx.Autocomplete.expand(~c\"" (reverse to-expand) "\")\n") "ur-mom" repl-buffer nil t)
+    (accept-process-output (get-buffer-process repl-buffer))
+    (when-let ((completions (inf-elixir--parse-completions "ur-mom")))
+      (kill-buffer "ur-mom")
+      (message (apply #'concat completions))
+      (list (car bounds) (cdr bounds) completions))))
+
+(defun inf-elixir--parse-completions (buffer)
+  "Parse any completions that IEx.Autocomplete has handed back to BUFFER."
+  (with-current-buffer buffer
+    (ansi-color-filter-region (point-min) (point-max))
+    (let ((buffer-contents (buffer-string)))
+      (when (string-match "\{:yes, \\[\\], \\[\\(.+\\)\\]\}" buffer-contents)
+        (when-let ((batch-match (match-string 1 buffer-contents)))
+          (message "YEP!")
+          (seq-filter (lambda (match) (not (equal match "")))
+                      (split-string batch-match "[,' ]+")))))))
 
 (defun inf-elixir--up-directory (dir)
   "Return the directory above DIR."
