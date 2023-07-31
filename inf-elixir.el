@@ -112,28 +112,35 @@ printed instead.")
 
 ;;; Private functions
 
+(defvar inf-elixir--completion-text ""
+  "Foobar.")
+
 (defun inf-elixir-completion-at-point ()
   "Return completions for the current prompt."
   (when-let ((repl-buffer (current-buffer))
+             (repl-process (get-buffer-process repl-buffer))
              (bounds (save-excursion (backward-char) (bounds-of-thing-at-point 'sentence)))
              (to-expand (buffer-substring (car bounds) (cdr bounds))))
-    (comint-redirect-send-command-to-process (concat "IEx.Autocomplete.expand(~c\"" (reverse to-expand) "\")\n") "ur-mom" repl-buffer nil t)
-    (accept-process-output (get-buffer-process repl-buffer))
-    (when-let ((completions (inf-elixir--parse-completions "ur-mom")))
-      (kill-buffer "ur-mom")
-      (message (apply #'concat completions))
-      (list (car bounds) (cdr bounds) completions))))
+    (unwind-protect
+        (progn (set-process-filter repl-process 'inf-elixir--completion-filter)
+               (process-send-string repl-process (concat "IEx.Autocomplete.expand(~c\"" (reverse to-expand) "\")\n"))
+               (accept-process-output repl-process)
+               (when-let ((completions (inf-elixir--parse-completions inf-elixir--completion-text)))
+                 (list (car bounds) (cdr bounds) completions)))
+      (message inf-elixir--completion-text)
+      (setq inf-elixir--completion-text "")
+      (set-process-filter repl-process nil))))
 
-(defun inf-elixir--parse-completions (buffer)
-  "Parse any completions that IEx.Autocomplete has handed back to BUFFER."
-  (with-current-buffer buffer
-    (ansi-color-filter-region (point-min) (point-max))
-    (let ((buffer-contents (buffer-string)))
-      (when (string-match "\{:yes, \\[\\], \\[\\(.+\\)\\]\}" buffer-contents)
-        (when-let ((batch-match (match-string 1 buffer-contents)))
-          (message "YEP!")
-          (seq-filter (lambda (match) (not (equal match "")))
-                      (split-string batch-match "[,' ]+")))))))
+(defun inf-elixir--completion-filter (proc output)
+  "PROC OUTPUT."
+  (setq inf-elixir--completion-text (concat inf-elixir--completion-text (ansi-color-filter-apply output))))
+
+(defun inf-elixir--parse-completions (text)
+  "Parse any completions from IEx.Autocomplete in TEXT."
+  (when (string-match "\{:yes, \\[\\], \\[\\(.+\\)\\]\}" text)
+    (when-let ((batch-match (match-string 1 text)))
+      (seq-filter (lambda (match) (not (equal match "")))
+                  (split-string batch-match "[,' ]+")))))
 
 (defun inf-elixir--up-directory (dir)
   "Return the directory above DIR."
