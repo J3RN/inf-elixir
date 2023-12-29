@@ -32,6 +32,25 @@ Once your installation is configured to use MELPA, `inf-elixir` can be installed
          ("C-c i R" . 'inf-elixir-reload-module)))
 ```
 
+### Or with Doom Emacs:
+#### **`packages.el`**
+``` elisp
+(package! inf-elixir)
+```
+#### **`config.el`**
+``` elisp
+(map! :after elixir-mode
+        :localleader
+        :map elixir-mode-map
+        :prefix ("i" . "inf-elixir")
+        "i" 'inf-elixir
+        "p" 'inf-elixir-project
+        "l" 'inf-elixir-send-line
+        "r" 'inf-elixir-send-region
+        "b" 'inf-elixir-send-buffer
+        "R" 'inf-elixir-reload-module)
+```
+
 ## Keybindings
 
 `inf-elixir` intentionally ships with no keybindings by default. This grants the user the freedom to specify whatever keybindings they would like. Functions that users would probably have an interest in binding are:
