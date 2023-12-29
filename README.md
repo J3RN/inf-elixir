@@ -32,14 +32,18 @@ Once your installation is configured to use MELPA, `inf-elixir` can be installed
          ("C-c i R" . 'inf-elixir-reload-module)))
 ```
 
-Doom Emacs
+### Or with Doom Emacs:
+#### **`packages.el`**
+``` elisp
+(package! inf-elixir)
+```
+#### **`config.el`**
 ``` elisp
 (map! :after elixir-mode
         :localleader
         :map elixir-mode-map
         :prefix ("i" . "inf-elixir")
         "i" 'inf-elixir
-        "s" 'jest-test-run-at-point
         "p" 'inf-elixir-project
         "l" 'inf-elixir-send-line
         "r" 'inf-elixir-send-region
