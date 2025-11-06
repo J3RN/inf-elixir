@@ -1,8 +1,8 @@
 ;;; inf-elixir.el --- Run an interactive Elixir shell -*- lexical-binding: t -*-
 
-;; Copyright © 2019–2021 Jonathan Arnett <jonathan.arnett@protonmail.com>
+;; Copyright © 2019 Jonathan Arnett <j3rn@j3rn.com>
 
-;; Author: Jonathan Arnett <jonathan.arnett@protonmail.com>
+;; Author: Jonathan Arnett <j3rn@j3rn.com>
 ;; URL: https://github.com/J3RN/inf-elixir
 ;; Keywords: languages, processes, tools
 ;; Version: 2.1.2
